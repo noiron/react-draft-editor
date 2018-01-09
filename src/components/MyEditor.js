@@ -2,6 +2,7 @@ import React from 'react';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import Toolbar from './Toolbar';
 
+import 'draft-js/dist/Draft.css';
 import './MyEditor.css';
 
 class MyEditor extends React.Component {
@@ -20,17 +21,22 @@ class MyEditor extends React.Component {
     }
 
     render() {
+        const { editorState } = this.state;
+        let className = 'Editor-editor';
+
         return (
             <div className="Editor-root">
                 <Toolbar 
-                    editorState={this.state.editorState}
+                    editorState={editorState}
                     onToggle={this.toggleInlineStyle}
                 />
-                <Editor
-                    editorState={this.state.editorState}
-                    onChange={this.onChange}
-                    placeholder="Say something..."
-                />
+                <div className={className}>
+                    <Editor
+                        editorState={editorState}
+                        onChange={this.onChange}
+                        placeholder="Say something..."
+                    />
+                </div>
             </div>
         );
     }
