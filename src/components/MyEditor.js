@@ -12,12 +12,22 @@ class MyEditor extends React.Component {
             editorState: EditorState.createEmpty()
         };
         this.onChange = editorState => this.setState({ editorState });
+        this.focus = () => this.refs.editor.focus();
     }
 
     toggleInlineStyle = inlineStyle => {
         this.onChange(
             RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
         );
+    }
+
+    handleKeyCommand = (command, editorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            this.onChange(newState);
+            return true;
+        }
+        return false;
     }
 
     render() {
@@ -34,7 +44,9 @@ class MyEditor extends React.Component {
                     <Editor
                         editorState={editorState}
                         onChange={this.onChange}
+                        handleKeyCommand={this.handleKeyCommand}
                         placeholder="Say something..."
+                        ref="editor"
                     />
                 </div>
             </div>
