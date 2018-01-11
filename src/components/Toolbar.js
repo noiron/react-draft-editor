@@ -1,5 +1,6 @@
 import React from 'react';
 import StyleButton from './StyleButton';
+import LinkButton from './LinkButton';
 
 const INLINE_STYLES = [
     { label: 'Bold', style: 'BOLD' },
@@ -21,8 +22,14 @@ const Toolbar = props => {
                     style={type.style}
                 />
             ))}
+            <LinkButton addLink={addLink} />
         </div>
     );
 };
 
 export default Toolbar;
+
+
+function addLink() {
+    console.log('add a link');
+}
