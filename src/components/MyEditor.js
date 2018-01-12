@@ -2,6 +2,8 @@ import React from 'react';
 import { Editor, EditorState, RichUtils, convertToRaw, CompositeDecorator } from 'draft-js';
 import Toolbar from './Toolbar';
 import Link from './Link';
+import Dialog from 'rc-dialog';
+import 'rc-dialog/dist/rc-dialog.css';
 
 import 'draft-js/dist/Draft.css';
 import './MyEditor.css';
@@ -19,7 +21,9 @@ class MyEditor extends React.Component {
 
         this.state = {
             editorState: EditorState.createEmpty(decorator),
-            readOnly: false
+            readOnly: false,
+            openModal: false,
+            linkUrl: '',
         };
         this.onChange = editorState => this.setState({ editorState });
         this.focus = () => this.refs.editor.focus();
@@ -52,13 +56,11 @@ class MyEditor extends React.Component {
         return false;
     }
 
-    // 给选中的文字加上默认的链接 www.github.com
-    addLink = (e) => {
-        e.preventDefault();
+    // 给选中的文字加上链接
+    _addLink = (url) => {
         const { editorState } = this.state;
         const contentState = editorState.getCurrentContent();
 
-        const url = 'https://www.github.com';
         // 在 ContentState 中创建一个 LINK entity
         const contentStateWithEntity = contentState.createEntity(
             'LINK',
@@ -76,8 +78,25 @@ class MyEditor extends React.Component {
                 newEditorState,
                 newEditorState.getSelection(),
                 entityKey
-            )
+            ),
+            linkUrl: ''
         });
+    }
+
+    handleLinkButton = (e) => {
+        e.preventDefault();
+        this.toggleModal();
+    }
+
+    toggleModal = () => {
+        this.setState({ openModal: !this.state.openModal });
+    }
+
+    changeLinkUrl = (url) => {
+        const url = this.refs.urlInput.value;   // 输入的URL地址
+        this.setState({ linkUrl: url });
+        this._addLink(url);
+        this.toggleModal();
     }
 
     render() {
@@ -92,11 +111,14 @@ class MyEditor extends React.Component {
                 <button onClick={this.contentConvertToRaw} className="debug-button">
                     convertToRaw
                 </button>
+                {/* <button className="debug-button" onClick={this.toggleModal}>
+                    Open Modal
+                </button> */}
 
                 <Toolbar 
                     editorState={editorState}
                     onToggle={this.toggleInlineStyle}
-                    addLink={this.addLink}
+                    addLink={this.handleLinkButton}
                 />
                 <div className={className}>
                     <Editor
@@ -108,6 +130,13 @@ class MyEditor extends React.Component {
                         readOnly={this.state.readOnly}
                     />
                 </div>
+
+                <Dialog title={'插入链接'} onClose={this.toggleModal} visible={this.state.openModal}>
+                    <label htmlFor="url-input">请输入链接：</label>
+                    <input id="url-input" ref="urlInput"></input>
+                    <button onClick={this.changeLinkUrl}>确定</button>
+                    <button onClick={this.toggleModal}>取消</button>
+                </Dialog>
             </div>
         );
     }
