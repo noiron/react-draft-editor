@@ -22,14 +22,9 @@ const Toolbar = props => {
                     style={type.style}
                 />
             ))}
-            <LinkButton addLink={addLink} />
+            <LinkButton addLink={props.addLink} />
         </div>
     );
 };
 
 export default Toolbar;
-
-
-function addLink() {
-    console.log('add a link');
-}
