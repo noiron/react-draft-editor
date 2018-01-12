@@ -10,8 +10,15 @@ class MyEditor extends React.Component {
     constructor(props) {
         super(props);
 
+        const decorator = new CompositeDecorator([
+            {
+                strategy: findLinkEntities,
+                component: Link
+            }
+        ]);
+
         this.state = {
-            editorState: EditorState.createEmpty(),
+            editorState: EditorState.createEmpty(decorator),
             readOnly: false
         };
         this.onChange = editorState => this.setState({ editorState });
@@ -107,3 +114,10 @@ class MyEditor extends React.Component {
 }
 
 export default MyEditor;
+
+function findLinkEntities(contentBlock, callback, contentState) {
+    contentBlock.findEntityRanges(character => {
+        const entityKey = character.getEntity();
+        return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
+    }, callback);
+}
