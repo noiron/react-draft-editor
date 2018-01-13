@@ -73,6 +73,7 @@ class MyEditor extends React.Component {
             currentContent: contentStateWithEntity
         });
 
+
         this.setState({
             editorState: RichUtils.toggleLink(
                 newEditorState,
@@ -92,7 +93,7 @@ class MyEditor extends React.Component {
         this.setState({ openModal: !this.state.openModal });
     }
 
-    changeLinkUrl = (url) => {
+    changeLinkUrl = () => {
         const url = this.refs.urlInput.value;   // 输入的URL地址
         this.setState({ linkUrl: url });
         this._addLink(url);
@@ -131,11 +132,22 @@ class MyEditor extends React.Component {
                     />
                 </div>
 
-                <Dialog title={'插入链接'} onClose={this.toggleModal} visible={this.state.openModal}>
+                <Dialog title={'插入链接'} onClose={this.toggleModal} 
+                    visible={this.state.openModal}
+                    className="add-link-dialog"
+                >
+                    <p className="get-info">
+                        <label htmlFor="link-text-input">请输入显示文本：</label>
+                        <input id="link-text-input" ref="linkTextInput"></input>
+                    </p>
+                    <p className="get-info">
                     <label htmlFor="url-input">请输入链接：</label>
-                    <input id="url-input" ref="urlInput"></input>
+                        <input id="url-input" ref="urlInput" defaultValue="https://"></input>
+                    </p>
+                    <div className="buttons">
                     <button onClick={this.changeLinkUrl}>确定</button>
                     <button onClick={this.toggleModal}>取消</button>
+                    </div>
                 </Dialog>
             </div>
         );

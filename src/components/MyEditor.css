@@ -35,3 +35,25 @@
 .debug-button {
     margin: 0 10px 15px 0;
 }
+
+ /* 添加链接的对话框  */
+.add-link-dialog .get-info {
+    display: flex;
+}
+
+.add-link-dialog .get-info label {
+    flex: 0 1 150px;
+}
+
+.add-link-dialog .get-info input {
+    flex: 3;
+    margin-right: 45px;
+}
+
+.add-link-dialog .buttons {
+    text-align: center;
+}
+
+.add-link-dialog .buttons button {
+    margin: 0 10px;
+}
