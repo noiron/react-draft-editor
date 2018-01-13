@@ -24,6 +24,7 @@ class MyEditor extends React.Component {
             readOnly: false,
             openModal: false,
             linkUrl: '',
+            linkText: '',
         };
         this.onChange = editorState => this.setState({ editorState });
         this.focus = () => this.refs.editor.focus();
@@ -72,7 +73,7 @@ class MyEditor extends React.Component {
         const newEditorState = EditorState.set(editorState, {
             currentContent: contentStateWithEntity
         });
-
+        
 
         this.setState({
             editorState: RichUtils.toggleLink(
@@ -87,6 +88,9 @@ class MyEditor extends React.Component {
     handleLinkButton = (e) => {
         e.preventDefault();
         this.toggleModal();
+        this.setState({
+            linkText: this.getSelectedText()
+        });
     }
 
     toggleModal = () => {
@@ -98,6 +102,26 @@ class MyEditor extends React.Component {
         this.setState({ linkUrl: url });
         this._addLink(url);
         this.toggleModal();
+    }
+
+    changeLinkText = e => {
+        this.setState({ linkText: e.target.value });
+    }
+
+    // 获取当前选中的文字
+    getSelectedText = () => {
+        const { editorState } = this.state;
+
+        const selectionState = editorState.getSelection();
+        const anchorKey = selectionState.getAnchorKey();
+        const currentContent = editorState.getCurrentContent();
+
+        const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        const start = selectionState.getStartOffset();
+        const end = selectionState.getEndOffset();
+        const selectedText = currentContentBlock.getText().slice(start, end);
+
+        return selectedText;
     }
 
     render() {
@@ -138,15 +162,18 @@ class MyEditor extends React.Component {
                 >
                     <p className="get-info">
                         <label htmlFor="link-text-input">请输入显示文本：</label>
-                        <input id="link-text-input" ref="linkTextInput"></input>
+                        <input id="link-text-input"
+                            value={this.state.linkText}
+                            onChange={this.changeLinkText}
+                        ></input>
                     </p>
                     <p className="get-info">
-                    <label htmlFor="url-input">请输入链接：</label>
+                        <label htmlFor="url-input">请输入链接：</label>
                         <input id="url-input" ref="urlInput" defaultValue="https://"></input>
                     </p>
                     <div className="buttons">
-                    <button onClick={this.changeLinkUrl}>确定</button>
-                    <button onClick={this.toggleModal}>取消</button>
+                        <button onClick={this.changeLinkUrl}>确定</button>
+                        <button onClick={this.toggleModal}>取消</button>
                     </div>
                 </Dialog>
             </div>
